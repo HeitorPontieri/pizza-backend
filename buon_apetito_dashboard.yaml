@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: Buon Appetito
+  description: |-
+   API destinada ao controle de uma pizzaria usando CRUD
+   
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: lucascamiloramalho00@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost::3306
+paths:
+  /v1/aluno:
+    post:
+      tags:
+        - aluno
+      summary: Adiciona um novo produto
+      description: Adiciona um novo produto, podendo ser uma nova pizza ou uma bebida
+      requestBody:
+        description: JSON contendo os dados do novo aluno a ser inserido no sistema
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aluno'
+        required: true
+      responses:
+        '200':
+      
+          description: Successful operation
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - aluno
+      summary: Lista todos os alunos
+      description: Listagem de todos os alunos registrados no sistema
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aluno'          
+           
+        '404':
+          description: Not Found
+  /v1/aluno/{id}:
+    get:
+      tags:
+        - aluno
+      summary: Busca um aluno prlo ID
+      description: Retorna um aluno pelo ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of pet to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aluno'          
+        '400':
+          description: O aluno especificado não existe
+        '404':
+          description: O aluno especificado não foi encontrado
+    put:
+      tags:
+        - aluno
+      summary: Atualiza um aluno pelo Id
+      description: Atualiza um aluno pelo Id
+      parameters:
+        - name: id
+          in: path
+          description: ID do aluno para retornar
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aluno'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+        - aluno
+      summary: Delete aluno
+      description: Excluir um aluno
+      parameters:
+        - name: id
+          in: path
+          description: ID of pet to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+components:
+  schemas:
+    Aluno:
+      required:
+        - nome
+      type: object
+      properties:
+        id:
+          type: integer
+        nome: 
+          type: string
+        imagem:
+          type: string
+        status_promocao:
+          type: string
+        preco:
+          type: number
+        porcentagem_desconto:
+          type: number 
+        status_favorito:
+          type: integer
+  requestBodies:
+    Aluno:
+      description: Objeto que deve ser enviado no Body das requisicoes
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Aluno'
+    
