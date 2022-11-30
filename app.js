@@ -15,9 +15,9 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const { json } = require('body-parser')
 const colab = require('./controller/controllerColaboradores.js')
+const produtos = require('./controller/controllerProduto.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
-const { response } = require('express')
-const e = require('express')
+const {response} = require('express')
 
 const app = express()
 
@@ -31,7 +31,7 @@ app.use((request, response, next) => {
 const jsonParser = bodyParser.json()
 
 // Adicionar um novo colaborador
-app.post('/v1/colaborador/', cors(), jsonParser, async function (request, response){
+app.post('/v1/colaborador', cors(), jsonParser, async function (request, response){
 
     let statusCode
     let message
@@ -61,20 +61,15 @@ app.post('/v1/colaborador/', cors(), jsonParser, async function (request, respon
 
 })
 // Retorna o colaborador 
-app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function(request,response){
+app.get('/v1/colaborador/login', cors(), async function(request,response){
 
     let statusCode
     let message
-    let nome_usuario = request.params.nome_usuario
-    let senha = request.params.senha
-
-    dados = {}
     
-    dados.nome_usuario = nome_usuario
-    dados.senha = senha
 
+    let dados = request.body
 
-    if(id != ''&& id != undefined){
+    if(JSON.stringify(dados) != '{}'){
         const dadosColab = await colab.listarColaborador(dados)
 
         if(dadosColab){
@@ -95,6 +90,38 @@ app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function(request,r
     response.json(message)
  
 })
+app.post('/v1/produto'), cors(), async function (request, response) {
+
+    let statusCode
+    let message
+    let headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+        
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody)!= '{}') {
+            
+            const ControllerProduto = await produtos.novoProduto(dadosBody)
+
+            statusCode = ControllerProduto.status
+            message = ControllerProduto.message
+
+        }else {
+
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+
+        }
+
+    } else {
+
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+
+    }
+    
+}
 
 app.listen(8080, function () {
     console.log('Servidor aguardando requisições')

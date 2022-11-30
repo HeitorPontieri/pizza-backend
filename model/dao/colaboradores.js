@@ -32,13 +32,14 @@ const insertColaborador = async function (dados) {
 }
 const selectColaborador = async function (dados) {
     try {
-        let sql = `select as tbl_colaboradores.nome_usuario,tbl_colaboradores.senha from tbl_colaboradores 
-                    where nome_usuario = MD5('${dados.nome_usuario}' and senha = MD5('${dados.senha}'))`
+        let sql = `select tbl_colaboradores.nome_usuario,tbl_colaboradores.senha from tbl_colaboradores 
+                    where nome_usuario = MD5('${dados.nome_usuario}') and senha = MD5('${dados.senha}');`
+                  
 
         const result = await prisma.$queryRawUnsafe(sql)
 
         if (result) {
-            return true
+            return result
         }
         else{
             return false
