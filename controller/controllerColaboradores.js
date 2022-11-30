@@ -7,7 +7,7 @@ Data_criação : 28/11/2022
 Versão : 1.0
 */
 
-const insert  = require('../model/dao/colaboradores.js')
+const dao  = require('../model/dao/colaboradores.js')
 
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('../modulo/config.js')
 
@@ -17,7 +17,7 @@ const novoColaborador = async function (dados){
         return{status:400,message:MESSAGE_ERROR.REQUIRED_FIELDS}
 
     else{
-        const novoColab = await insert.insertColaborador(dados)
+        const novoColab = await dao.insertColaborador(dados)
 
         if(novoColab){
             return{status:201,message:MESSAGE_SUCESS.INSERT_ITEM}
@@ -28,6 +28,28 @@ const novoColaborador = async function (dados){
     }
 }
 
+const listarColaborador = async function(dados){
+
+    let dadosColab = {}
+
+    if(dados.nome_usuario == ''|| dados.nome_usuario == undefined || dados.senha == ''|| dados.senha == undefined)
+    return{status:400,message:MESSAGE_ERROR.REQUIRED_FIELDS}
+
+    else{
+        const listarColab = await dao.selectColaborador(dados)
+
+        if(listarColab){
+            dadosColab.dados = listarColab
+
+            return dadosColab
+        }
+        else{
+            return {status:500,message:MESSAGE_ERROR.INTERNAL_ERROR_DB}
+        }
+
+    }
+     
+}
 
 
 
@@ -35,5 +57,6 @@ const novoColaborador = async function (dados){
 
 
 module.exports={
-    novoColaborador
+    novoColaborador,
+    listarColaborador
 }

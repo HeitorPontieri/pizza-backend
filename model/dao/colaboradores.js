@@ -8,42 +8,52 @@ Versão : 1.0
 
 const { PrismaClient } = require('@prisma/client')
 
-const prisma =  new PrismaClient
+const prisma = new PrismaClient
 
-const insertColaborador = async function (dados){
+const insertColaborador = async function (dados) {
     try {
         let sql = `insert into tbl_colaboradores(nome_usuario,senha)
         values(MD5('${dados.nome_usuario}'),MD5('${dados.senha}'));`
 
-        
-    const result = await prisma.$executeRawUnsafe(sql)
 
-    if(result)
-        return true
+        const result = await prisma.$executeRawUnsafe(sql)
 
-    else
-        return false
+        if (result)
+            return true
 
-    } 
+        else
+            return false
+
+    }
     catch (error) {
         return false
     }
-    
-}
-const selectColaborador = async function(dados){
-
-    let sql = `select as id,nome_usuario,senha from tbl_colaboradores where nome_usuario = MD5('${dados.nome_usuario}' and senha = MD5('${dados.senha}'))`
-
-   const result = prisma.$queryRawUnsafe(sql)
-
-   
-
 
 }
+const selectColaborador = async function (dados) {
+    try {
+        let sql = `select as tbl_colaboradores.nome_usuario,tbl_colaboradores.senha from tbl_colaboradores 
+                    where nome_usuario = MD5('${dados.nome_usuario}' and senha = MD5('${dados.senha}'))`
+
+        const result = await prisma.$queryRawUnsafe(sql)
+
+        if (result) {
+            return true
+        }
+        else{
+            return false
+        }
+    }
+    catch (error) {
+        return false
+    }
+
+
+}
 
 
 
-module.exports={
+module.exports = {
     insertColaborador,
     selectColaborador
 }
