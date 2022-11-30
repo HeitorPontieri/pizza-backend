@@ -21,7 +21,7 @@ const insertCritica = async(dados) => {
             criticas,
         )
         value(
-            '${dados.criticas}'
+            '${dados.critica}'
         )`
         
         const result = await prisma.$executeRawUnsafe(sql)

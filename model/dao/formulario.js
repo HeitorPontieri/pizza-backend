@@ -12,14 +12,25 @@ const prisma = new PrismaClient()
 
 const insertForm = async function(dados){
     try {
-
-        let sql = `insert into tbl_formulario(nome,mensagem) values ('${dados.nome}', '${dados.mensagem}') `
-
-
-
-
-
-    } catch (error) {
+        let sql = `insert into tbl_formulario(nome, mensagem, email, telefone, celular, criticas_sugestoes) 
         
+       values ('${dados.nome}', '${dados.mensagem}','${dados.email}' , '${dados.telefone}', '${dados.celular}', '${dados.criticas_sugestoes}') `
+    console.log(sql);
+
+        const result = prisma.$queryRawUnsafe(sql)
+
+        if(result){
+            return true
+        }
+        else{
+            return false
+        }
+    } catch (error) {
+        return false
     }
+}
+
+
+module.exports={
+    insertForm
 }

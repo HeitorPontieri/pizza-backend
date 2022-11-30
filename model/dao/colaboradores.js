@@ -16,7 +16,7 @@ const insertColaborador = async function (dados) {
         values(MD5('${dados.nome_usuario}'),MD5('${dados.senha}'));`
 
 
-        const result = await prisma.$executeRawUnsafe(sql)
+        const result = await prisma.$queryRawUnsafe(sql)
 
         if (result)
             return true
