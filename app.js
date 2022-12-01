@@ -130,11 +130,14 @@ app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
         message = MESSAGE_ERROR.CONTENT_TYPE
 
     }
-
     response.status(statusCode)
     response.json(message)
 
+<<<<<<< Updated upstream
 })
+=======
+}
+>>>>>>> Stashed changes
 
 app.post('/v1/formulario', cors(), jsonParser, async function (request, response) {
 
