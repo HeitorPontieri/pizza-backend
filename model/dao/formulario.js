@@ -14,13 +14,12 @@ const insertForm = async function(dados){
     try {
         let sql = `insert into tbl_formulario(nome, mensagem, email, telefone, celular, criticas_sugestoes) 
         
-       values ('${dados.nome}', '${dados.mensagem}','${dados.email}' , '${dados.telefone}', '${dados.celular}', '${dados.criticas_sugestoes}') `
-    console.log(sql);
-
+       values ('${dados.nome}', '${dados.mensagem}','${dados.email}' , '${dados.telefone}', '${dados.celular}', '${dados.criticas_sugestoes}');`
+        
         const result = prisma.$queryRawUnsafe(sql)
 
         if(result){
-            return true
+            return result
         }
         else{
             return false

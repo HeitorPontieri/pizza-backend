@@ -17,13 +17,9 @@ const { json } = require('body-parser')
 
 
 
+const button = require('./controller/controllerBotoes.js')
 const colab = require('./controller/controllerColaboradores.js')
-const produtos = require('./controller/controllerProduto.js')
-const telefone = require('./controller/controllerTelefone')
-const celular = require('./controller/controllerCelular')
-const critica = require('./controller/controllerCriticas_sugestoes')
 const formulario = require('./controller/controllerFormulario.js')
-
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 
 
@@ -100,22 +96,26 @@ app.get('/v1/colaborador/login', cors(), async function (request, response) {
     response.json(message)
 
 })
-app.post('/v1/produto'), cors(), async function (request, response) {
+app.post('/v1/produto', cors(), async function (request, response) {
 
     let statusCode
     let message
-    let headerContentType = request.headers['content-type']
-
+    let headerContentType 
+    
+    headerContentType= request.headers['content-type']
+    
     if (headerContentType == 'application/json') {
 
         let dadosBody = request.body
-
+        
         if (JSON.stringify(dadosBody) != '{}') {
 
-            const ControllerProduto = await produtos.novoProduto(dadosBody)
+            const produtos = require('./controller/controllerProduto.js')
 
-            statusCode = ControllerProduto.status
-            message = ControllerProduto.message
+            const controllerProduto = await produtos.novoProduto(dadosBody)
+
+            statusCode = controllerProduto.status
+            message = controllerProduto.message
 
         } else {
 
@@ -134,8 +134,7 @@ app.post('/v1/produto'), cors(), async function (request, response) {
     response.status(statusCode)
     response.json(message)
 
-
-}
+})
 
 app.post('/v1/formulario', cors(), jsonParser, async function (request, response) {
 
@@ -147,13 +146,12 @@ app.post('/v1/formulario', cors(), jsonParser, async function (request, response
     headerContentType = request.headers['content-type']
 
     //validar se content type é do tipo  
-    //v1/application/json
+
     if (headerContentType == 'application/json') {
 
         //recebe do corpo da mensagem conteudo
         let dadosBody = request.body
 
-        
         if (JSON.stringify(dadosBody) != '{}') {
 
             const forms = require('./controller/controllerFormulario.js')
@@ -182,6 +180,78 @@ app.post('/v1/formulario', cors(), jsonParser, async function (request, response
     response.json(message)
 
 })
+// Adicionar um novo botão
+app.post('/v1/botoes/adicionar', cors(), jsonParser, async function (request, response) {
+
+    let statusCode
+    let message
+    let headerContentType
+
+    //recebe o tipo de content-type que foi enviado no header da aquisicao  
+    headerContentType = request.headers['content-type']
+
+  
+    if (headerContentType == 'application/json') {
+
+        
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody) != '{}') {
+
+            const novobutton = await button.novoBotao(dadosBody)
+
+            statusCode = novobutton.status
+            message = novobutton.message
+
+        } else {
+
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+
+        }
+
+    } else {
+
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+app.get('/v1/botoes', cors(), async function (request, response){
+
+    let statusCode
+    let message
+
+    const trazerbutton = await button.trazerBotao()
+    
+    if (trazerbutton) {
+       
+        statusCode = 200
+        message = trazerbutton
+    }
+    else {
+        
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+    }
+    
+    response.status(statusCode)
+    response.json(message)
+})
+
+
+   
+    
+
+
+
+
 app.listen(8080, function () {
+
     console.log('Servidor aguardando requisições')
+
 }) 

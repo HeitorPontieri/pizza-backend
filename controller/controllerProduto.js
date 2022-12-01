@@ -11,28 +11,46 @@ const {MESSAGE_ERROR, MESSAGE_SUCCESS} = require('../modulo/config.js')
 
 const novoProduto = async (dados) => {
 
+
     if (dados.nome == '' || dados.nome == undefined || dados.imagem == undefined|| dados.imagem == '' || dados.status_promocao == undefined || dados.status_promocao == '' || dados.preco == undefined || dados.preco == '' || dados.status_favorito == '' || dados.status_favorito == undefined) {
         
         return {status: 400, message: MESSAGE_ERROR.REQUIRED_FIELDS}
 
     } else{
-
+        
         const novoProduto = require('../model/DAO/produto.js')
 
         const resultNovoProduto = await novoProduto.insertProduto(dados)
-        
+
+    
+
         if (resultNovoProduto) {
             
-            return { status: 201, message: MESSAGE_SUCCESS.INSERT_ITEM}
+            if (dados.teor_alcoolico != undefined && dados.volume != undefined) {
+    
+                const novaBebida = require('../model/DAO/bebidas.js')
+                const resultNovaBebida = await novaBebida.insertBebida(dados)
+    
+    
+                if (resultNovaBebida) {
+                    return { status: 201, message: MESSAGE_SUCCESS.INSERT_ITEM}
+                }else{
+                    return {status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB}
+                }
+   
+            } else{
 
-        }else{
-
-            return {status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB}
-
-        }
-
-    }
+                const novaPizza = require('../model/DAO/bebida.js')
+                const resultNovaPizza = await novaPizza.insertPizza(dados)
         
+                if (resultNovaPizza) {
+                    return { status: 201, message: MESSAGE_SUCCESS.INSERT_ITEM}
+                }else{
+                    return {status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB}
+                }
+            }
+        } 
+    }       
 }
 
 module.exports = {

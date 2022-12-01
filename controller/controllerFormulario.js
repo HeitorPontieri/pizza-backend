@@ -17,14 +17,17 @@ const novoFormulario = async function(dados){
 
         return{status:400,message:MESSAGE_ERROR.REQUIRED_FIELDS}
 
+    else if (!dados.email.includes('@')) {
+        return { status: 400, message: MESSAGE_ERROR.INVALID_EMAIL }
+    }
     else{
 
         const novoForm = await dao.insertForm(dados)
+        
 
         if(novoForm){
 
             return{status:201,message:MESSAGE_SUCESS.INSERT_ITEM}
-
         }
         else{
 

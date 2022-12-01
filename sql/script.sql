@@ -12,22 +12,6 @@ unique index(id)
 
 );
 
-create table tbl_telefone(
-id int not null auto_increment primary key,
-ddd int not null,
-numero varchar(15) not null,
-unique index(id)
-
-);
-
-create table tbl_celular(
-id int not null auto_increment primary key,
-ddd int not null,
-numero varchar(15) not null,
-unique index(id)
-
-);
-
  create table tbl_criticas_sugestoes(
  id int not null auto_increment primary key,
  criticas varchar(25),
