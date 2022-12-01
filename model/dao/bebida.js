@@ -33,6 +33,8 @@ const insertBebida = async(dados) => {
             '${produtos}'
         )`
         
+        console.log(sql);
+
         const result = await prisma.$queryRawUnsafe(sql)
     
         if (result) {

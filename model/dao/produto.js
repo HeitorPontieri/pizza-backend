@@ -6,7 +6,7 @@ Data_criação : 28/10/2022
 Versão : 1.0
 */
 
-const { MESSAGE_SUCCESS, MESSAGE_ERROR } = require('../modulo/config.js')
+const { MESSAGE_SUCCESS, MESSAGE_ERROR } = require('../../modulo/config.js')
 
 const { PrismaClient } = require('@prisma/client')
 
@@ -29,12 +29,12 @@ const insertProduto = async(dados) => {
             '${dados.nome}',
             '${dados.imagem}',
             '${dados.status_promocao}',
-            ${dados.preco},
-            ${dados.porcentagem_desconto},
-            ${dados.status_favorito}
+            '${dados.preco}',
+            '${dados.porcentagem_desconto}',
+            '${dados.status_favorito}'
         );`
-            
-           
+        console.log(sql);
+       
         
         const result = await prisma.$queryRawUnsafe(sql)
     

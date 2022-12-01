@@ -96,7 +96,7 @@ app.get('/v1/colaborador/login', cors(), async function (request, response) {
     response.json(message)
 
 })
-app.post('/v1/produto', cors(), async function (request, response) {
+app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
 
     let statusCode
     let message
@@ -110,9 +110,9 @@ app.post('/v1/produto', cors(), async function (request, response) {
         
         if (JSON.stringify(dadosBody) != '{}') {
 
-            const produtos = require('./controller/controllerProduto.js')
+            const ControllerProduto = require('./controller/controllerProduto.js')
 
-            const controllerProduto = await produtos.novoProduto(dadosBody)
+            const controllerProduto = await ControllerProduto.novoProduto(dadosBody)
 
             statusCode = controllerProduto.status
             message = controllerProduto.message
