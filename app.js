@@ -36,109 +36,8 @@ app.use((request, response, next) => {
 
 const jsonParser = bodyParser.json()
 
-// Adicionar um novo colaborador
-app.post('/v1/colaborador', cors(), jsonParser, async function (request, response) {
 
-    let statusCode
-    let message
-    let headerContentType
-
-    headerContentType = request.headers['content-type']
-
-    if (headerContentType == 'application/json') {
-        let dadosBody = request.body
-        if (JSON.stringify(dadosBody) != '{}') {
-            const novoColab = await colab.novoColaborador(dadosBody)
-            statusCode = novoColab.status
-            message = novoColab.message
-        }
-        else {
-            statusCode = 400
-            message = MESSAGE_ERROR.EMPTY_BODY
-        }
-    }
-    else {
-        statusCode = 415
-        message = MESSAGE_ERROR.CONTENT_TYPE
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-})
-// Retorna o colaborador 
-app.get('/v1/colaborador/login', cors(), async function (request, response) {
-
-    let statusCode
-    let message
-
-    let dados = request.body
-
-    if (headerContentType == 'application/json') {
-        if (JSON.stringify(dados) != '{}') {
-            const dadosColab = await colab.listarColaborador(dados)
-
-            if (dadosColab) {
-                statusCode = 200
-                message = dadosColab
-            }
-            else {
-                statusCode = 404
-                message = MESSAGE_ERROR.NOT_FOUND_DB
-            }
-        }
-        else {
-            statusCode = 400
-            message = MESSAGE_ERROR.REQUIRED_FIELDS
-        }
-    }
-    response.status(statusCode)
-    response.json(message)
-
-})
-app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
-
-    let statusCode
-    let message
-    let headerContentType 
-    
-    headerContentType= request.headers['content-type']
-    
-    if (headerContentType == 'application/json') {
-
-        let dadosBody = request.body
-        
-        if (JSON.stringify(dadosBody) != '{}') {
-
-            const ControllerProduto = require('./controller/controllerProduto.js')
-
-            const controllerProduto = await ControllerProduto.novoProduto(dadosBody)
-
-            statusCode = controllerProduto.status
-            message = controllerProduto.message
-
-        } else {
-
-            statusCode = 404
-            message = MESSAGE_ERROR.EMPTY_BODY
-
-        }
-
-    } else {
-
-        statusCode = 415
-        message = MESSAGE_ERROR.CONTENT_TYPE
-
-    }
-    response.status(statusCode)
-    response.json(message)
-
-<<<<<<< Updated upstream
-})
-=======
-}
->>>>>>> Stashed changes
-
+// Adicionar um novo formulario
 app.post('/v1/formulario', cors(), jsonParser, async function (request, response) {
 
     let statusCode
@@ -183,47 +82,7 @@ app.post('/v1/formulario', cors(), jsonParser, async function (request, response
     response.json(message)
 
 })
-// Adicionar um novo botão
-app.post('/v1/botoes/adicionar', cors(), jsonParser, async function (request, response) {
-
-    let statusCode
-    let message
-    let headerContentType
-
-    //recebe o tipo de content-type que foi enviado no header da aquisicao  
-    headerContentType = request.headers['content-type']
-
-  
-    if (headerContentType == 'application/json') {
-
-        
-        let dadosBody = request.body
-
-        if (JSON.stringify(dadosBody) != '{}') {
-
-            const novobutton = await button.novoBotao(dadosBody)
-
-            statusCode = novobutton.status
-            message = novobutton.message
-
-        } else {
-
-            statusCode = 404
-            message = MESSAGE_ERROR.EMPTY_BODY
-
-        }
-
-    } else {
-
-        statusCode = 415
-        message = MESSAGE_ERROR.CONTENT_TYPE
-
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-})
+// Retornar os botoes da pagina inicial
 app.get('/v1/botoes', cors(), async function (request, response){
 
     let statusCode
@@ -245,13 +104,6 @@ app.get('/v1/botoes', cors(), async function (request, response){
     response.status(statusCode)
     response.json(message)
 })
-
-
-   
-    
-
-
-
 
 app.listen(8080, function () {
 

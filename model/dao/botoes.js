@@ -33,7 +33,7 @@ const insertButtons = async function(dados){
 const getButtons = async function(){
     try {
         let sql = `select tbl_botoes.nome, tbl_botoes.img from tbl_botoes`
-        console.log(sql);
+        
 
         const result  = prisma.$queryRawUnsafe(sql)
 

@@ -33,15 +33,15 @@ const insertProduto = async(dados) => {
             '${dados.porcentagem_desconto}',
             '${dados.status_favorito}'
         );`
-        console.log(sql);
-       
         
-        const result = await prisma.$queryRawUnsafe(sql)
+        
+        const result = await prisma.$executeRawUnsafe(sql)
+    
     
         if (result) {
             return true
         }else {
-            return MESSAGE_ERROR.INTERNAL_ERROR_DB
+            return false
         }
 
     } catch (error) {
@@ -64,6 +64,7 @@ const updateProduto = async (dados) => {
             porcentagem_desconto = ${dados.porcentagem_desconto},
             status_favorito = ${dados.status_favorito}
 
+
         `
 
         //executa o script sql no banco de dados ($executeRawUnsafe permite encaminhar um variavel contendo um script)
@@ -81,7 +82,6 @@ const updateProduto = async (dados) => {
         return false
 
     }
-
 
 }
 

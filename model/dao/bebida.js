@@ -7,17 +7,17 @@ Data_criação : 28/10/2022
 Versão : 1.0
 */
 
-const { MESSAGE_SUCCESS, MESSAGE_ERROR } = require('../modulo/config.js')
+const { MESSAGE_SUCCESS, MESSAGE_ERROR } = require('../../modulo/config.js')
 
 const { PrismaClient } = require('@prisma/client')
 
-import { selectLastId } from "./produto";
+const  { selectLastId } = require( "./produto.js")
 
 const prisma = new PrismaClient()
 
 const insertBebida = async(dados) => {
 
-    const produtos = selectLastId()
+    const produtos = await selectLastId()
 
     try {
 
@@ -28,12 +28,12 @@ const insertBebida = async(dados) => {
             id_Produto
         )
         values(
-            '${dados.teor_alcoolico}'
-            '${dados.volume}'
-            '${produtos}'
+            ${dados.teor_alcoolico},
+            ${dados.volume},
+            ${produtos}
         )`
         
-        console.log(sql);
+        
 
         const result = await prisma.$queryRawUnsafe(sql)
     
@@ -44,7 +44,6 @@ const insertBebida = async(dados) => {
         }
 
     } catch (error) {
-
         return false
         
     }
