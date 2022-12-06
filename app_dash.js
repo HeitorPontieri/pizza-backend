@@ -20,7 +20,7 @@ const colab = require('./controller/controllerColaboradores.js')
 const formulario = require('./controller/controllerFormulario.js')
 const hora = require('./controller/controllerHorario_de_funcionamento.js')
 const servico = require('./controller/controllerServicos.js')
-const ControllerProduto = require('./controller/controllerProduto.js')
+const produto = require('./controller/controllerProduto.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 
 
@@ -120,9 +120,9 @@ app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
         
         if (JSON.stringify(dadosBody) != '{}') {
 
-            const controllerProd = await ControllerProduto.novoProduto(dadosBody)
+            const controllerProd = await produto.novoProduto(dadosBody)
             
-             statusCode = ControllerProd.status
+             statusCode = controllerProd.status
              message = controllerProd.message
 
         } else {

@@ -37,8 +37,7 @@ const getAllServices = async function() {
     try {
         
         let sql = `select * from vwServicos;`
-
-       
+        
         const result = await prisma.$queryRawUnsafe(sql)
 
         if(result){

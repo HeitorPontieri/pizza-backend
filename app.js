@@ -21,7 +21,7 @@ const button = require('./controller/controllerBotoes.js')
 const servicos = require('./controller/controllerServicos.js')
 const colab = require('./controller/controllerColaboradores.js')
 const formulario = require('./controller/controllerFormulario.js')
-const promocao = require('./controller/ControllerPromocao.js')
+const favoritos = require('./controller/ControllerFavoritos.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 
 
@@ -134,23 +134,32 @@ app.get('/v1/servicos', cors(), async function (request, response) {
 
 })
 
-app.post('/v1/promocao', cors(), async function (request, response) {
+app.post('/v1/favorito', cors(), jsonParser, async function (request, response) {
 
     let statusCode
     let message
     let headerContentType
 
+    //recebe o tipo de content-type que foi enviado no header da aquisicao  
     headerContentType = request.headers['content-type']
 
+    //validar se content type é do tipo  
+
     if (headerContentType == 'application/json') {
+
+        //recebe do corpo da mensagem conteudo
         let dadosBody = request.body
+        
 
         if (JSON.stringify(dadosBody) != '{}') {
 
-            const ControllerPromo = promocao.ExibirPromocao(dadosBody)
+            
+            //encaminha os dados do body
+            const fav = await favoritos.ExibirFavoritos(dadosBody)
+           
 
-            statusCode = 200
-            message = ControllerPromo
+            statusCode = fav.status
+            message = fav.message
 
         } else {
 
@@ -159,11 +168,15 @@ app.post('/v1/promocao', cors(), async function (request, response) {
 
         }
 
+    } else {
+
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+
     }
 
     response.status(statusCode)
     response.json(message)
-
 
 })
 

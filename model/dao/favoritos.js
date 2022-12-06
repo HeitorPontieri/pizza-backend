@@ -10,15 +10,15 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient
 
-const getPromocao = async function(status_promocao){
+const getFavoritos = async function(status_favorito){
     try {
 
-        let sql = ` call procPromocao('${status_promocao}')`
+        const status_fav =  status_favorito
+      
+        let sql =  `call procFavorito(${status_fav.status_favorito})`
         
-
         const result = await prisma.$queryRawUnsafe(sql)
        
-
         if (result) {
             return result
         }
@@ -32,5 +32,5 @@ const getPromocao = async function(status_promocao){
 }
 
 module.exports={
-    getPromocao
+    getFavoritos
 }
