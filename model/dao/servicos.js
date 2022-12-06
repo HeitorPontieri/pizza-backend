@@ -16,12 +16,11 @@ const insertService = async function(dados){
 
         const horario_funcionamento_id = await selectLastID()
 
-        let sql = `insert into tbl_servico(nome,id_horario_funcionamento)
+        let sql = `insert into tbl_servicos(nome,id_horario_funcionamento)
             values('${dados.nome}',${horario_funcionamento_id});`
 
-           
         const result = await prisma.$executeRawUnsafe(sql)
-    console.log(result);
+        
         if(result){
             return true
         }
@@ -33,7 +32,34 @@ const insertService = async function(dados){
         return false 
     }
 }
+const getAllServices = async function() {
+
+    try {
+        
+        let sql = `select * from vwServicos;`
+
+       
+        const result = await prisma.$queryRawUnsafe(sql)
+
+        if(result){
+            return result
+        }
+        else{
+
+            return false
+
+        }
+
+    } catch (error) {
+
+        return false 
+        
+    }
+    
+}
+
 
 module.exports={
-    insertService
+    insertService,
+    getAllServices
 }

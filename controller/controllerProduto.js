@@ -14,7 +14,7 @@ const novosIngredientes = require('../model/dao/ingredientes')
 
 const novoProduto = async (dados) => {
 
-    if (dados.nome == '' || dados.nome == undefined || dados.imagem == undefined || dados.imagem == '' || dados.status_promocao == undefined || dados.status_promocao == '' || dados.preco == undefined || dados.preco == '') {
+    if (dados.nome == '' || dados.nome == undefined || dados.imagem == undefined || dados.imagem == '' || dados.status_promocao == undefined || dados.status_promocao == '' || dados.preco == undefined || dados.preco == '' || dados.tipo_produto == undefined || dados.tipo_produto == '') {
 
         return { status: 400, message: MESSAGE_ERROR.REQUIRED_FIELDS }
 
@@ -36,8 +36,8 @@ const novoProduto = async (dados) => {
                 }
 
             }
+
             else {
-                
                 
                 if (dados.ingrediente_principal != undefined && dados.acompanhamentos != undefined) {
                     
@@ -58,6 +58,8 @@ const novoProduto = async (dados) => {
         }
     }
 }
+
+
 
 module.exports = {
     novoProduto

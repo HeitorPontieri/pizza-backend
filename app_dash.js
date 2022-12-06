@@ -104,6 +104,7 @@ app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function(request,r
     response.json(message)
 
 })
+
 // Adiciona um novo produto
 app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
 
@@ -119,10 +120,10 @@ app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
         
         if (JSON.stringify(dadosBody) != '{}') {
 
-            const controllerProduto = await ControllerProduto.novoProduto(dadosBody)
-
-            statusCode = controllerProduto.status
-            message = controllerProduto.message
+            const controllerProd = await ControllerProduto.novoProduto(dadosBody)
+            
+             statusCode = ControllerProd.status
+             message = controllerProd.message
 
         } else {
 

@@ -18,8 +18,10 @@ const { json } = require('body-parser')
 
 
 const button = require('./controller/controllerBotoes.js')
+const servicos = require('./controller/controllerServicos.js')
 const colab = require('./controller/controllerColaboradores.js')
 const formulario = require('./controller/controllerFormulario.js')
+const promocao = require('./controller/ControllerPromocao.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 
 
@@ -83,27 +85,88 @@ app.post('/v1/formulario', cors(), jsonParser, async function (request, response
 
 })
 // Retornar os botoes da pagina inicial
-app.get('/v1/botoes', cors(), async function (request, response){
+app.get('/v1/botoes', cors(), async function (request, response) {
 
     let statusCode
     let message
 
     const trazerbutton = await button.trazerBotao()
-    
+
     if (trazerbutton) {
-       
+
         statusCode = 200
         message = trazerbutton
     }
     else {
-        
+
         statusCode = 400
         message = MESSAGE_ERROR.NOT_FOUND_DB
+
     }
-    
+
     response.status(statusCode)
     response.json(message)
+
 })
+
+// Traz todos os serviços já criados no banco
+app.get('/v1/servicos', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+
+    const allServices = await servicos.ExibirServicos()
+
+    if (allServices) {
+
+        statusCode = 200
+        message = allServices
+
+    } else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+
+app.post('/v1/promocao', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+    let headerContentType
+
+    headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody) != '{}') {
+
+            const ControllerPromo = promocao.ExibirPromocao(dadosBody)
+
+            statusCode = 200
+            message = ControllerPromo
+
+        } else {
+
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+
+        }
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
+
 
 app.listen(8080, function () {
 

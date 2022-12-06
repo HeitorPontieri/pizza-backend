@@ -25,7 +25,24 @@ const novoServico = async (dados) =>{
         }
     }
 }
+const ExibirServicos = async () => {
+
+    const allServices = await dao.getAllServices()
+
+    if (allServices) {
+        
+        return allServices
+
+    } else {
+
+        return{status:500,message:MESSAGE_ERROR.INTERNAL_ERROR_DB}
+
+    }
+
+}
+
 
 module.exports={
-    novoServico
+    novoServico,
+    ExibirServicos
 }
