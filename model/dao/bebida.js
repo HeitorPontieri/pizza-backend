@@ -35,7 +35,7 @@ const insertBebida = async(dados) => {
         
         
 
-        const result = await prisma.$queryRawUnsafe(sql)
+        const result = await prisma.$executeRawUnsafe(sql)
     
         if (result) {
             return true
@@ -43,11 +43,67 @@ const insertBebida = async(dados) => {
             return MESSAGE_ERROR.INTERNAL_ERROR_DB
         }
 
+
     } catch (error) {
         return false
         
     }
 
 }
+const getAllBebidas = async () => {
 
-module.exports = {insertBebida}
+    try {
+        
+        let sql = `select * from vwBebida;`
+
+        const result = await prisma.$queryRawUnsafe(sql)
+
+        if (result) {
+            
+            return result
+
+        } else {
+
+            return MESSAGE_ERROR.INTERNAL_ERROR_DB
+            
+        }
+
+
+    } catch (error) {
+        
+        return MESSAGE_ERROR.INTERNAL_ERROR_DB
+
+    }
+
+
+}
+const getBebidaById = async (id) => {
+
+    try {
+        
+        let sql = `select * from vwBebida where id = ${id};`
+        console.log(sql);
+
+        const result = await prisma.$queryRawUnsafe(sql)
+
+        if (result) {
+            
+            return result
+
+        } else {
+
+            return MESSAGE_ERROR.INTERNAL_ERROR_DB
+            
+        }
+
+
+    } catch (error) {
+        
+        return MESSAGE_ERROR.INTERNAL_ERROR_DB
+
+    }
+
+
+}
+
+module.exports = {insertBebida, getAllBebidas,getBebidaById }

@@ -33,7 +33,26 @@ const insertIngred = async (dados) =>{
         return false
     }
 }
+const getLastID = async function(){
+    try {
+        let sql = `select id from tbl_ingredientes order by id desc limit 1;`
+
+        const result = await prisma.$queryRawUnsafe(sql)
+
+        if (result) {
+            return result[0].id
+            
+        } else {
+            return false
+        }
+
+        
+    } catch (error) {
+        return false
+    }
+}
 
 module.exports={
-    insertIngred
+    insertIngred,
+    getLastID
 }

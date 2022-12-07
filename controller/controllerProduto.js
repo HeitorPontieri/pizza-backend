@@ -8,9 +8,10 @@ Versão : 1.0
 */
 const { MESSAGE_SUCESS, MESSAGE_ERROR } = require('../modulo/config.js')
 const novoProd = require('../model/DAO/produto.js')
-const novaBebida = require('../model/DAO/bebida.js')
-const novaPizza = require('../model/dao/pizza.js')
-const novosIngredientes = require('../model/dao/ingredientes')
+const Bebidas = require('../model/DAO/bebida.js')
+const Pizza = require('../model/dao/pizza.js')
+const pizza_ing = require('../model/dao/ingredientes_pizza.js')
+const novosIngredientes = require('../model/dao/ingredientes.js')
 
 const novoProduto = async (dados) => {
 
@@ -21,13 +22,13 @@ const novoProduto = async (dados) => {
     } else {
 
         const resultNovoProduto = await novoProd.insertProduto(dados)
-
+        
 
         if (resultNovoProduto) {
 
-            if (dados.teor_alcoolico != undefined && dados.volume != undefined) {
+            if (dados.tipo_produto ==  'Bebida' || dados.tipo_produto ==  'bebida') {
 
-                const resultNovaBebida = await novaBebida.insertBebida(dados)
+                const resultNovaBebida = await Bebidas.insertBebida(dados)
 
                 if (resultNovaBebida) {
                     return { status: 201, message: MESSAGE_SUCESS.INSERT_ITEM }
@@ -39,13 +40,12 @@ const novoProduto = async (dados) => {
 
             else {
                 
-                if (dados.ingrediente_principal != undefined && dados.acompanhamentos != undefined) {
+                if (dados.tipo_produto == 'Pizza' || dados.tipo_produto == 'pizza') {
                     
-                    const resultNovaPizza = await novaPizza.insertPizza(dados)
+                    const resultPizza = await Pizza.insertPizza(dados)
+                    const resultPizza_Ingred = await pizza_ing.insertPizzaIngrediente()
 
-                    const resultNovoIngred = await novosIngredientes.insertIngred(dados)
-                    
-                    if (resultNovoIngred && resultNovaPizza) {
+                    if (resultPizza && resultPizza_Ingred) {
                         return { status: 201, message: MESSAGE_SUCESS.INSERT_ITEM }
                     } else {
                         return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
@@ -58,10 +58,82 @@ const novoProduto = async (dados) => {
         }
     }
 }
+const ExibirBebidas = async () => {
+
+    const bebidas = await Bebidas.getAllBebidas()  
+
+    if (bebidas) {
+        
+        return { status: 201, message: bebidas}
+
+    } else {
+
+        return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
+        
+    }
+
+} 
+const ExibirBebidaId = async (id) => {
+
+    const ID = await Bebidas.getBebidaById(id)
+
+    if (ID) {
+        
+        return { status: 201, message: ID}
+
+    } else {
+
+        return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
+        
+    }
+
+}
+const ExibirPizzas = async () => {
+
+    const pizzas = await Pizza.getPizza()  
+
+    if (pizzas) {
+        
+        return { status: 201, message: pizzas}
+
+    } else {
+
+        return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
+        
+    }
+
+
+
+}
+
+const ExibirPizzaId = async (id) => {
+
+    const ID = await Pizza.getPizzasById(id)
+
+    if (ID) {
+        
+        return { status: 201, message: ID}
+
+    } else {
+
+        return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
+        
+    }
+
+}
+
+
+
+
 
 
 
 module.exports = {
-    novoProduto
+
+    novoProduto,
+    ExibirBebidas,
+    ExibirBebidaId,
+    ExibirPizzaId,
+    ExibirPizzas
 
 }

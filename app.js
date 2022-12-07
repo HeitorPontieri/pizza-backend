@@ -22,6 +22,7 @@ const servicos = require('./controller/controllerServicos.js')
 const colab = require('./controller/controllerColaboradores.js')
 const formulario = require('./controller/controllerFormulario.js')
 const favoritos = require('./controller/ControllerFavoritos.js')
+const produtos = require('./controller/controllerProduto.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 
 
@@ -106,6 +107,54 @@ app.get('/v1/botoes', cors(), async function (request, response) {
 
     response.status(statusCode)
     response.json(message)
+
+})
+app.get('/v1/bebidas', cors(), async function (request, response)  {
+
+    let statusCode
+    let message
+
+    const trazerBebidas = await produtos.ExibirBebidas()
+
+    if (trazerBebidas) {
+
+        statusCode = trazerBebidas.status
+        message = trazerBebidas.message
+    }
+    else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
+app.get('/v1/pizzas', cors(), async function (request, response)  {
+
+    let statusCode
+    let message
+
+    const trazerPizzas = await produtos.ExibirPizzas()
+
+    if (trazerPizzas) {
+
+        statusCode = trazerPizzas.status
+        message = trazerPizzas.message
+    }
+    else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
 
 })
 

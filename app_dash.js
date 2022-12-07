@@ -18,11 +18,11 @@ const { json } = require('body-parser')
 const button = require('./controller/controllerBotoes.js')
 const colab = require('./controller/controllerColaboradores.js')
 const formulario = require('./controller/controllerFormulario.js')
+const ingrediente = require('./controller/controllerIngredientes.js')
 const hora = require('./controller/controllerHorario_de_funcionamento.js')
 const servico = require('./controller/controllerServicos.js')
 const produto = require('./controller/controllerProduto.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
-
 
 const app = express()
 
@@ -69,35 +69,106 @@ app.post('/v1/colaborador', cors(), jsonParser, async function (request, respons
 
 })
 // Retorna o colaborador 
-app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function(request,response){
-
+app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function (request, response) {
+    
     let statusCode
     let message
     let nome_usuario = request.params.nome_usuario
     let senha = request.params.senha
-
+    
     dados = {}
-
+    
+    
     dados.nome_usuario = nome_usuario
     dados.senha = senha
-
-
-    if(dados != ''&& dados != undefined ){
+    
+    
+    if (dados != '' && dados != undefined) {
         const dadosColab = await colab.listarColaborador(dados)
         
-
-        if(dadosColab){
+        
+        if (dadosColab) {
             statusCode = 200
             message = dadosColab
         }
-        else{
+        else {
             statusCode = 404
             message = MESSAGE_ERROR.NOT_FOUND_DB
         }
     }
-    else{
+    else {
         statusCode = 400
         message = MESSAGE_ERROR.REQUIRED_FIELDS
+    }
+    
+    response.status(statusCode)
+    response.json(message)
+    
+})
+app.get('/v1/bebidas/:id', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+
+    let id = request.params.id
+   
+
+    if (id != '' && id != undefined) {
+
+        const trazerBebidaId = await produto.ExibirBebidaId(id)
+
+        if (trazerBebidaId) {
+
+            statusCode = trazerBebidaId.status
+            message = trazerBebidaId.message
+
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.NOT_FOUND_DB
+        }
+
+    } else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_FIELDS
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
+app.get('/v1/pizzas/:id', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+
+    let id = request.params.id
+   
+
+    if (id != '' && id != undefined) {
+
+        const trazerPizzaId = await produto.ExibirPizzaId(id)
+        console.log(trazerPizzaId);
+
+        if (trazerPizzaId) {
+
+            statusCode = trazerPizzaId.status
+            message = trazerPizzaId.message
+
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.NOT_FOUND_DB
+        }
+
+    } else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_FIELDS
+
     }
 
     response.status(statusCode)
@@ -105,25 +176,27 @@ app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function(request,r
 
 })
 
+
 // Adiciona um novo produto
 app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
 
     let statusCode
     let message
-    let headerContentType 
-    
-    headerContentType= request.headers['content-type']
-    
+    let headerContentType
+
+    headerContentType = request.headers['content-type']
+
     if (headerContentType == 'application/json') {
 
         let dadosBody = request.body
-        
+
         if (JSON.stringify(dadosBody) != '{}') {
 
             const controllerProd = await produto.novoProduto(dadosBody)
-            
-             statusCode = controllerProd.status
-             message = controllerProd.message
+
+
+            statusCode = controllerProd.status
+            message = controllerProd.message
 
         } else {
 
@@ -153,10 +226,10 @@ app.post('/v1/botoes/adicionar', cors(), jsonParser, async function (request, re
     //recebe o tipo de content-type que foi enviado no header da aquisicao  
     headerContentType = request.headers['content-type']
 
-  
+
     if (headerContentType == 'application/json') {
 
-        
+
         let dadosBody = request.body
 
         if (JSON.stringify(dadosBody) != '{}') {
@@ -185,27 +258,28 @@ app.post('/v1/botoes/adicionar', cors(), jsonParser, async function (request, re
 
 })
 // Retorna um novo produto
-app.get('/v1/botoes', cors(), async function (request, response){
+app.get('/v1/botoes', cors(), async function (request, response) {
 
     let statusCode
     let message
 
     const trazerbutton = await button.trazerBotao()
-    
+
     if (trazerbutton) {
-       
+
         statusCode = 200
         message = trazerbutton
     }
     else {
-        
+
         statusCode = 400
         message = MESSAGE_ERROR.NOT_FOUND_DB
     }
-    
+
     response.status(statusCode)
     response.json(message)
 })
+
 // Adiciona um novo horario
 app.post('/v1/horario/adicionar', cors(), jsonParser, async function (request, response) {
 
@@ -216,10 +290,10 @@ app.post('/v1/horario/adicionar', cors(), jsonParser, async function (request, r
     //recebe o tipo de content-type que foi enviado no header da aquisicao  
     headerContentType = request.headers['content-type']
 
-  
+
     if (headerContentType == 'application/json') {
 
-        
+
         let dadosBody = request.body
 
         if (JSON.stringify(dadosBody) != '{}') {
@@ -257,10 +331,10 @@ app.post('/v1/servico/adicionar', cors(), jsonParser, async function (request, r
     //recebe o tipo de content-type que foi enviado no header da aquisicao  
     headerContentType = request.headers['content-type']
 
-  
+
     if (headerContentType == 'application/json') {
 
-        
+
         let dadosBody = request.body
 
         if (JSON.stringify(dadosBody) != '{}') {
@@ -288,7 +362,38 @@ app.post('/v1/servico/adicionar', cors(), jsonParser, async function (request, r
     response.json(message)
 
 })
+// Adicionar um serviço
+app.post('/v1/ingrediente', cors(), jsonParser, async function (request, response) {
 
+    let statusCode
+    let message
+    let headerContentType
+
+    //recebe o tipo de content-type que foi enviado no header da aquisicao  
+    headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody) != '{}') {
+            const novoIngr = await ingrediente.novosIngredientes(dadosBody)
+
+            statusCode = novoIngr.status
+            message = novoIngr.message
+        } 
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+        }
+    } else {
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
 
 app.listen(8080, function () {
 

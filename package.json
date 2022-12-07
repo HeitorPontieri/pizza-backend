@@ -11,7 +11,7 @@
     "nodemon": "^2.0.20"
   },
   "scripts": {
-    "start": "nodemon app.js",
-    "startTwo": "nodemon app_dash.js"
+    "start": "nodemon app_dash.js"
+    
   }
 }

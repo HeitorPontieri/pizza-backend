@@ -42,6 +42,67 @@ const insertPizza = async () => {
         
     }
 
+} 
+
+const getPizzasById = async (id) => {
+
+    try {
+        
+        let sql = `select * from vwPizza_Ingrediente where id = ${id};`
+        console.log(sql);
+
+        const result = await prisma.$queryRawUnsafe(sql)
+
+        if (result) {
+            
+            return result
+
+        } else {
+
+            return MESSAGE_ERROR.INTERNAL_ERROR_DB
+            
+        }
+
+
+    } catch (error) {
+        
+        return MESSAGE_ERROR.INTERNAL_ERROR_DB
+
+    }
+
+
+}
+const getPizza = async () => {
+
+    let sql = `select * from vwPizza`
+
+    const result = await prisma.$queryRawUnsafe(sql)
+
+    if (result) {
+        
+        return result
+
+    } else {
+
+        return MESSAGE_ERROR.INTERNAL_ERROR_DB
+        
+    }
+
 }
 
-module.exports = {insertPizza}
+
+const getLastIDPizza = async () =>{
+    
+    let sql = `select id from tbl_pizza order by id desc limit 1;`
+
+    const result = await prisma.$queryRawUnsafe(sql)
+
+    if (result) {
+        return result[0].id
+    }else {
+        return false
+    }
+}
+
+
+module.exports = {insertPizza,getLastIDPizza, getPizzasById, getPizza}
