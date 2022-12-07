@@ -109,58 +109,8 @@ app.get('/v1/botoes', cors(), async function (request, response) {
     response.json(message)
 
 })
-app.get('/v1/bebidas', cors(), async function (request, response)  {
-
-    let statusCode
-    let message
-
-    const trazerBebidas = await produtos.ExibirBebidas()
-
-    if (trazerBebidas) {
-
-        statusCode = trazerBebidas.status
-        message = trazerBebidas.message
-    }
-    else {
-
-        statusCode = 400
-        message = MESSAGE_ERROR.NOT_FOUND_DB
-
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-<<<<<<< Updated upstream
-=======
-})
->>>>>>> Stashed changes
-
-})
-app.get('/v1/pizzas', cors(), async function (request, response)  {
-
-    let statusCode
-    let message
-
-    const trazerPizzas = await produtos.ExibirPizzas()
-
-    if (trazerPizzas) {
-
-        statusCode = trazerPizzas.status
-        message = trazerPizzas.message
-    }
-    else {
-
-        statusCode = 400
-        message = MESSAGE_ERROR.NOT_FOUND_DB
-
-    }
-
-    response.status(statusCode)
-    response.json(message)
 
 
-})
 
 // Traz todos os serviços já criados no banco
 app.get('/v1/servicos', cors(), async function (request, response) {
@@ -232,7 +182,57 @@ app.post('/v1/favorito', cors(), jsonParser, async function (request, response) 
     response.json(message)
 
 })
+// Traz todas as pizzas
+app.get('/v1/pizzas', cors(), async function (request, response)  {
 
+    let statusCode
+    let message
+
+    const trazerPizzas = await produtos.ExibirPizzas()
+
+    if (trazerPizzas) {
+
+        statusCode = trazerPizzas.status
+        message = trazerPizzas.message
+    }
+    else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
+
+// Traz todas as bebidas
+app.get('/v1/bebidas', cors(), async function (request, response)  {
+
+    let statusCode
+    let message
+
+    const trazerBebidas = await produtos.ExibirBebidas()
+
+    if (trazerBebidas) {
+
+        statusCode = trazerBebidas.status
+        message = trazerBebidas.message
+    }
+    else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
 
 app.listen(8080, function () {
 
