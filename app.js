@@ -131,6 +131,10 @@ app.get('/v1/bebidas', cors(), async function (request, response)  {
     response.status(statusCode)
     response.json(message)
 
+<<<<<<< Updated upstream
+=======
+})
+>>>>>>> Stashed changes
 
 })
 app.get('/v1/pizzas', cors(), async function (request, response)  {
