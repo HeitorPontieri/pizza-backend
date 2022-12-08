@@ -90,7 +90,6 @@ const getPizza = async () => {
 
 }
 
-
 const getLastIDPizza = async () =>{
     
     let sql = `select id from tbl_pizza order by id desc limit 1;`

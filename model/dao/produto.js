@@ -70,5 +70,58 @@ const selectLastId = async () => {
     }
 }
 
+const selectProdutoById = async (id) => {
 
-module.exports = {insertProduto, selectLastId}
+    
+    let sql = `select * from tbl_produto where ${id};`
+
+    const rsDados = await prisma.$queryRawUnsafe(sql)
+
+    if (rsDados) {
+        return rsDados[0].id
+    }else {
+        return false
+    }
+}
+
+const updateProduto = async function(dados) {
+    try {
+
+        let sql  = `call procAtualizarProd (${dados.id},'${dados.nome}', '${dados.imagem}', '${dados.status_promocao}', ${dados.preco},${dados.porcentagem_desconto},${dados.status_favorito},'${dados.tipo_produto}');`
+
+       const result = await prisma.$executeRawUnsafe(sql)
+
+       if(result){
+        return true
+       }
+       else{
+        return false
+       }
+
+    } catch (error) {
+       return false 
+    }
+}
+
+const deleteProduto = async function(id){
+    try {
+
+        let sql = `delete from tbl_produto where id = ${id} ;`
+
+        const result = await prisma.$executeRawUnsafe(sql)
+
+       if(result){
+        return true
+       }
+       else{
+        return false
+       }
+
+        
+    } catch (error) {
+        return false
+    }
+}
+
+
+module.exports = {insertProduto, selectLastId,selectProdutoById, updateProduto, deleteProduto}

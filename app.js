@@ -143,23 +143,17 @@ app.post('/v1/favorito', cors(), jsonParser, async function (request, response) 
     let message
     let headerContentType
 
-    //recebe o tipo de content-type que foi enviado no header da aquisicao  
-    headerContentType = request.headers['content-type']
 
-    //validar se content type é do tipo  
+    headerContentType = request.headers['content-type']
 
     if (headerContentType == 'application/json') {
 
-        //recebe do corpo da mensagem conteudo
         let dadosBody = request.body
-        
 
         if (JSON.stringify(dadosBody) != '{}') {
 
-            
-            //encaminha os dados do body
+
             const fav = await favoritos.ExibirFavoritos(dadosBody)
-           
 
             statusCode = fav.status
             message = fav.message
@@ -182,8 +176,57 @@ app.post('/v1/favorito', cors(), jsonParser, async function (request, response) 
     response.json(message)
 
 })
+
+// Aumenta o valor do status_favorito
+app.put('/v1/favorito/atualizar/:id', cors(), jsonParser, async function (request, response) {
+
+
+    let statusCode
+    let message
+    let headerContentType
+
+    headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody) != '{}') {
+
+            let id = request.params.id
+
+            if (id != '' && id != undefined) {
+
+                dadosBody.id = id
+
+                const fav = await favoritos.atualizarFavorito(dadosBody)
+
+                statusCode = fav.status
+                message = fav.message
+
+            }
+        }
+        else {
+
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+
+        }
+
+    }
+    else {
+
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+})
+
 // Traz todas as pizzas
-app.get('/v1/pizzas', cors(), async function (request, response)  {
+app.get('/v1/pizzas', cors(), async function (request, response) {
 
     let statusCode
     let message
@@ -209,7 +252,7 @@ app.get('/v1/pizzas', cors(), async function (request, response)  {
 })
 
 // Traz todas as bebidas
-app.get('/v1/bebidas', cors(), async function (request, response)  {
+app.get('/v1/bebidas', cors(), async function (request, response) {
 
     let statusCode
     let message
@@ -233,6 +276,8 @@ app.get('/v1/bebidas', cors(), async function (request, response)  {
 
 
 })
+
+
 
 app.listen(8080, function () {
 

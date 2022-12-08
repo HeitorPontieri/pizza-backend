@@ -23,6 +23,7 @@ const hora = require('./controller/controllerHorario_de_funcionamento.js')
 const servico = require('./controller/controllerServicos.js')
 const produto = require('./controller/controllerProduto.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
+const { updateProduto } = require('./model/DAO/produto.js')
 
 const app = express()
 
@@ -36,145 +37,6 @@ app.use((request, response, next) => {
 })
 
 const jsonParser = bodyParser.json()
-
-
-// Adicionar um novo colaborador
-app.post('/v1/colaborador', cors(), jsonParser, async function (request, response) {
-
-    let statusCode
-    let message
-    let headerContentType
-
-    headerContentType = request.headers['content-type']
-
-    if (headerContentType == 'application/json') {
-        let dadosBody = request.body
-        if (JSON.stringify(dadosBody) != '{}') {
-            const novoColab = await colab.novoColaborador(dadosBody)
-            statusCode = novoColab.status
-            message = novoColab.message
-        }
-        else {
-            statusCode = 400
-            message = MESSAGE_ERROR.EMPTY_BODY
-        }
-    }
-    else {
-        statusCode = 415
-        message = MESSAGE_ERROR.CONTENT_TYPE
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-})
-// Retorna o colaborador 
-app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function (request, response) {
-    
-    let statusCode
-    let message
-    let nome_usuario = request.params.nome_usuario
-    let senha = request.params.senha
-    
-    dados = {}
-    
-    
-    dados.nome_usuario = nome_usuario
-    dados.senha = senha
-    
-    
-    if (dados != '' && dados != undefined) {
-        const dadosColab = await colab.listarColaborador(dados)
-        
-        
-        if (dadosColab) {
-            statusCode = 200
-            message = dadosColab
-        }
-        else {
-            statusCode = 404
-            message = MESSAGE_ERROR.NOT_FOUND_DB
-        }
-    }
-    else {
-        statusCode = 400
-        message = MESSAGE_ERROR.REQUIRED_FIELDS
-    }
-    
-    response.status(statusCode)
-    response.json(message)
-    
-})
-app.get('/v1/bebidas/:id', cors(), async function (request, response) {
-
-    let statusCode
-    let message
-
-    let id = request.params.id
-   
-
-    if (id != '' && id != undefined) {
-
-        const trazerBebidaId = await produto.ExibirBebidaId(id)
-
-        if (trazerBebidaId) {
-
-            statusCode = trazerBebidaId.status
-            message = trazerBebidaId.message
-
-        }
-        else {
-            statusCode = 404
-            message = MESSAGE_ERROR.NOT_FOUND_DB
-        }
-
-    } else {
-
-        statusCode = 400
-        message = MESSAGE_ERROR.REQUIRED_FIELDS
-
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-
-})
-app.get('/v1/pizzas/:id', cors(), async function (request, response) {
-
-    let statusCode
-    let message
-
-    let id = request.params.id
-   
-
-    if (id != '' && id != undefined) {
-
-        const trazerPizzaId = await produto.ExibirPizzaId(id)
-        console.log(trazerPizzaId);
-
-        if (trazerPizzaId) {
-
-            statusCode = trazerPizzaId.status
-            message = trazerPizzaId.message
-
-        }
-        else {
-            statusCode = 404
-            message = MESSAGE_ERROR.NOT_FOUND_DB
-        }
-
-    } else {
-
-        statusCode = 400
-        message = MESSAGE_ERROR.REQUIRED_FIELDS
-
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-})
 
 
 // Adiciona um novo produto
@@ -215,6 +77,259 @@ app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
     response.json(message)
 
 })
+
+app.put('/v1/produto/atualizar/:id', cors(), jsonParser, async function (request, response) {
+
+    let statusCode
+    let message
+    let headerContentType
+
+    headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody) != '{}') {
+
+            let id = request.params.id
+
+            if (id != '' && id != undefined) {
+
+                dadosBody.id = id
+
+                const update = await produto.atualizarProduto(dadosBody)
+
+                statusCode = update.status
+                message = update.message
+
+            }
+        }
+        else {
+
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+
+        }
+
+    }
+    else {
+
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+})
+
+// Apaga um produto 
+app.delete('/v1/produto/a/:id', cors(), jsonParser, async function (request, response) {
+
+    let statusCode
+    let message
+    let id = request.params.id
+
+   
+    if (id != '' && id != undefined) {
+
+        const excluirProd = await produto.excluirProduto(id)
+        statusCode = excluirProd.status
+        message = excluirProd.message
+    }
+    else {
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_ID
+    }
+    
+    response.status(statusCode)
+    response.json(message)
+})
+
+// Adicionar um ingrediente
+app.post('/v1/ingrediente', cors(), jsonParser, async function (request, response) {
+
+    let statusCode
+    let message
+    let headerContentType
+
+    //recebe o tipo de content-type que foi enviado no header da aquisicao  
+    headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+        let dadosBody = request.body
+
+        if (JSON.stringify(dadosBody) != '{}') {
+            const novoIngr = await ingrediente.novosIngredientes(dadosBody)
+
+            statusCode = novoIngr.status
+            message = novoIngr.message
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.EMPTY_BODY
+        }
+    } else {
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+
+
+/* CRUD DE COLABORADOR 
+
+- POST Login  = adiciona um novo colaborador
+- GET Login = vai trazer os logins e comparar com o que foi digitado pelo usuario
+
+*/
+
+
+// Adicionar um novo colaborador
+app.post('/v1/colaborador', cors(), jsonParser, async function (request, response) {
+
+    let statusCode
+    let message
+    let headerContentType
+
+    headerContentType = request.headers['content-type']
+
+    if (headerContentType == 'application/json') {
+        let dadosBody = request.body
+        if (JSON.stringify(dadosBody) != '{}') {
+            const novoColab = await colab.novoColaborador(dadosBody)
+            statusCode = novoColab.status
+            message = novoColab.message
+        }
+        else {
+            statusCode = 400
+            message = MESSAGE_ERROR.EMPTY_BODY
+        }
+    }
+    else {
+        statusCode = 415
+        message = MESSAGE_ERROR.CONTENT_TYPE
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+// Retorna o colaborador 
+app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+    let nome_usuario = request.params.nome_usuario
+    let senha = request.params.senha
+
+    dados = {}
+
+    dados.nome_usuario = nome_usuario
+    dados.senha = senha
+
+
+    if (dados != '' && dados != undefined) {
+        const dadosColab = await colab.listarColaborador(dados)
+
+
+        if (dadosColab) {
+            statusCode = 200
+            message = dadosColab
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.NOT_FOUND_DB
+        }
+    }
+    else {
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_FIELDS
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+app.get('/v1/bebidas/:id', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+
+    let id = request.params.id
+
+
+    if (id != '' && id != undefined) {
+
+        const trazerBebidaId = await produto.ExibirBebidaId(id)
+
+        if (trazerBebidaId) {
+
+            statusCode = trazerBebidaId.status
+            message = trazerBebidaId.message
+
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.NOT_FOUND_DB
+        }
+
+    } else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_FIELDS
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
+
+// Traz as pizzas pelo id
+app.get('/v1/pizzas/:id', cors(), async function (request, response) {
+
+    let statusCode
+    let message
+
+    let id = request.params.id
+
+
+    if (id != '' && id != undefined) {
+
+        const trazerPizzaId = await produto.ExibirPizzaId(id)
+        console.log(trazerPizzaId);
+
+        if (trazerPizzaId) {
+
+            statusCode = trazerPizzaId.status
+            message = trazerPizzaId.message
+
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.NOT_FOUND_DB
+        }
+
+    } else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_FIELDS
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+
+
+
 
 // Adicionar um novo botão
 app.post('/v1/botoes/adicionar', cors(), jsonParser, async function (request, response) {
@@ -362,38 +477,7 @@ app.post('/v1/servico/adicionar', cors(), jsonParser, async function (request, r
     response.json(message)
 
 })
-// Adicionar um serviço
-app.post('/v1/ingrediente', cors(), jsonParser, async function (request, response) {
 
-    let statusCode
-    let message
-    let headerContentType
-
-    //recebe o tipo de content-type que foi enviado no header da aquisicao  
-    headerContentType = request.headers['content-type']
-
-    if (headerContentType == 'application/json') {
-        let dadosBody = request.body
-
-        if (JSON.stringify(dadosBody) != '{}') {
-            const novoIngr = await ingrediente.novosIngredientes(dadosBody)
-
-            statusCode = novoIngr.status
-            message = novoIngr.message
-        } 
-        else {
-            statusCode = 404
-            message = MESSAGE_ERROR.EMPTY_BODY
-        }
-    } else {
-        statusCode = 415
-        message = MESSAGE_ERROR.CONTENT_TYPE
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-})
 
 app.listen(8080, function () {
 

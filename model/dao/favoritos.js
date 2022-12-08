@@ -10,27 +10,50 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient
 
-const getFavoritos = async function(status_favorito){
+const getFavoritos = async function (status_favorito) {
     try {
 
-        const status_fav =  status_favorito
-      
-        let sql =  `call procFavorito(${status_fav.status_favorito})`
-        
+        const status_fav = status_favorito
+
+        let sql = `call procFavorito(${status_fav.status_favorito})`
+
         const result = await prisma.$queryRawUnsafe(sql)
-       
+
         if (result) {
             return result
         }
-        else{
+        else {
             return false
         }
-        
+
     } catch (error) {
         return false
     }
 }
 
-module.exports={
-    getFavoritos
+const updateFavoritos = async function (dados) {
+    try {
+        let sql = `update tbl_produto
+            set tbl_produto.status_favorito = tbl_produto.status_favorito + 1
+            where tbl_produto.id = ${dados.id}`
+
+        const result = prisma.$executeRawUnsafe(sql)
+
+        if (result) {
+            return true
+        }
+        else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+
+
+}
+
+module.exports = {
+    getFavoritos,
+    updateFavoritos
 }
