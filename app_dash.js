@@ -125,13 +125,12 @@ app.put('/v1/produto/atualizar/:id', cors(), jsonParser, async function (request
 })
 
 // Apaga um produto 
-app.delete('/v1/produto/a/:id', cors(), jsonParser, async function (request, response) {
+app.delete('/v1/produto/apagar/:id', cors(), jsonParser, async function (request, response) {
 
     let statusCode
     let message
     let id = request.params.id
 
-   
     if (id != '' && id != undefined) {
 
         const excluirProd = await produto.excluirProduto(id)
@@ -148,7 +147,7 @@ app.delete('/v1/produto/a/:id', cors(), jsonParser, async function (request, res
 })
 
 // Adicionar um ingrediente
-app.post('/v1/ingrediente', cors(), jsonParser, async function (request, response) {
+app.post('/v1/ingrediente/:id', cors(), jsonParser, async function (request, response) {
 
     let statusCode
     let message

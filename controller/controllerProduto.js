@@ -166,6 +166,22 @@ const ExibirPizzaId = async (id) => {
     }
 
 }
+const ExibirProdutos = async () => {
+
+    const produtos = await model.getallProdutos()
+    
+
+    if (produtos) {
+
+        return { status: 201, message: produtos }
+
+    } else {
+
+        return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
+
+    }
+
+}
 
 
 
@@ -181,7 +197,8 @@ module.exports = {
     ExibirBebidas,
     ExibirBebidaId,
     ExibirPizzaId,
-    ExibirPizzas
+    ExibirPizzas,
+    ExibirProdutos
 
 
 }

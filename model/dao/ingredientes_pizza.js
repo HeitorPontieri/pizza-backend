@@ -16,16 +16,16 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-const insertPizzaIngrediente = async () =>{
+const insertPizzaIngrediente = async (dados) =>{
 
     const pizzas = await pizza.getLastIDPizza()
     const ing = await ingrediente.getLastID()
 
     try {
         let sql = `insert into tbl_ingredientes_pizza(id_pizza,id_ingredientes)
-            values ('${pizzas}', '${ing}')`
+            values ('', '') `
 
-            console.log(sql);
+            
         const result = await prisma.$executeRawUnsafe(sql)
 
         if (result) {

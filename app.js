@@ -137,46 +137,6 @@ app.get('/v1/servicos', cors(), async function (request, response) {
 
 })
 
-app.post('/v1/favorito', cors(), jsonParser, async function (request, response) {
-
-    let statusCode
-    let message
-    let headerContentType
-
-
-    headerContentType = request.headers['content-type']
-
-    if (headerContentType == 'application/json') {
-
-        let dadosBody = request.body
-
-        if (JSON.stringify(dadosBody) != '{}') {
-
-
-            const fav = await favoritos.ExibirFavoritos(dadosBody)
-
-            statusCode = fav.status
-            message = fav.message
-
-        } else {
-
-            statusCode = 404
-            message = MESSAGE_ERROR.EMPTY_BODY
-
-        }
-
-    } else {
-
-        statusCode = 415
-        message = MESSAGE_ERROR.CONTENT_TYPE
-
-    }
-
-    response.status(statusCode)
-    response.json(message)
-
-})
-
 // Aumenta o valor do status_favorito
 app.put('/v1/favorito/atualizar/:id', cors(), jsonParser, async function (request, response) {
 
@@ -263,6 +223,30 @@ app.get('/v1/bebidas', cors(), async function (request, response) {
 
         statusCode = trazerBebidas.status
         message = trazerBebidas.message
+    }
+    else {
+
+        statusCode = 400
+        message = MESSAGE_ERROR.NOT_FOUND_DB
+
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+
+})
+app.get('/v1/allprodutos', cors(), async function(request, response){
+
+    let statusCode
+    let message
+
+    const trazerProdutos = await produtos.ExibirProdutos()
+
+    if (trazerProdutos) {
+
+        statusCode = trazerProdutos.status
+        message = trazerProdutos.message
     }
     else {
 

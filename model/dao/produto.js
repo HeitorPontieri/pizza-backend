@@ -106,7 +106,7 @@ const updateProduto = async function(dados) {
 const deleteProduto = async function(id){
     try {
 
-        let sql = `delete from tbl_produto where id = ${id} ;`
+        let sql = `delete from tbl_produto where id = ${id};`
 
         const result = await prisma.$executeRawUnsafe(sql)
 
@@ -123,5 +123,27 @@ const deleteProduto = async function(id){
     }
 }
 
+const getallProdutos = async () => {
 
-module.exports = {insertProduto, selectLastId,selectProdutoById, updateProduto, deleteProduto}
+    try {
+
+        let sql = `select * from tbl_produto`
+
+        const result = await prisma.$queryRawUnsafe(sql)
+
+       if(result){
+        return result
+       }
+       else{
+        return false
+       }
+
+        
+    } catch (error) {
+        return false
+    }
+
+}
+
+
+module.exports = {insertProduto, selectLastId,selectProdutoById, updateProduto, deleteProduto, getallProdutos}
