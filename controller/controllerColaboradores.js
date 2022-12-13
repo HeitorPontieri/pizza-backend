@@ -8,6 +8,7 @@ Versão : 1.0
 */
 
 const dao  = require('../model/dao/colaboradores.js')
+const jwt = require('../middleware/jwt.js')
 
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('../modulo/config.js')
 
@@ -39,8 +40,13 @@ const listarColaborador = async function(dados){
         const listarColab = await dao.selectColaborador(dados)
 
         if(listarColab){
-            dadosColab.dados = listarColab
+            
+            // Gera o token pelo JWT
+            let tokenUser = await jwt.createJWT(dadosColab)
 
+            dadosColab.token  = tokenUser
+            dadosColab.dados = listarColab
+            
             return dadosColab
         }
         else{
