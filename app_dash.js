@@ -22,6 +22,7 @@ const ingrediente = require('./controller/controllerIngredientes.js')
 const hora = require('./controller/controllerHorario_de_funcionamento.js')
 const servico = require('./controller/controllerServicos.js')
 const produto = require('./controller/controllerProduto.js')
+const jwt = require('./middleware/jwt.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 const { updateProduto } = require('./model/DAO/produto.js')
 
@@ -37,6 +38,18 @@ app.use((request, response, next) => {
 })
 
 const jsonParser = bodyParser.json()
+
+const verifyJWT = async function(request,response,next){
+    let token = request.headers['x-access-token']
+    const autenticJWT = await jwt.validateJWT(token)
+
+    if(autenticJWT){
+        next()
+    }
+    else{
+        return response.status(401).end()
+    }
+}
 
 
 // Adiciona um novo produto
@@ -219,7 +232,7 @@ app.post('/v1/colaborador', cors(), jsonParser, async function (request, respons
 
 })
 // Retorna o colaborador 
-app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function (request, response) {
+app.get('/v1/colaborador/:nome_usuario/:senha', cors(),verifyJWT ,async function (request, response) {
 
     let statusCode
     let message
@@ -232,13 +245,49 @@ app.get('/v1/colaborador/:nome_usuario/:senha', cors(), async function (request,
     dados.senha = senha
 
 
-    if (dados != '' && dados != undefined) {
+    if (dados != '' && dados != undefined) {    
         const dadosColab = await colab.listarColaborador(dados)
 
 
         if (dadosColab) {
             statusCode = 200
             message = dadosColab
+        }
+        else {
+            statusCode = 404
+            message = MESSAGE_ERROR.NOT_FOUND_DB
+        }
+    }
+    else {
+        statusCode = 400
+        message = MESSAGE_ERROR.REQUIRED_FIELDS
+    }
+
+    response.status(statusCode)
+    response.json(message)
+
+})
+
+app.get('/v1/colaborador/autenticacao/:nome_usuario/:senha', cors(),async function (request, response) {
+
+    let statusCode
+    let message
+    let nome_usuario = request.params.nome_usuario
+    let senha = request.params.senha
+
+    dados = {}
+
+    dados.nome_usuario = nome_usuario
+    dados.senha = senha
+
+
+    if (dados != '' && dados != undefined) {    
+        const dadosValColab = await colab.validarColaborador(dados)
+
+
+        if (dadosValColab) {
+            statusCode = 200
+            message = dadosValColab
         }
         else {
             statusCode = 404

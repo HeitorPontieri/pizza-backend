@@ -23,6 +23,7 @@ const colab = require('./controller/controllerColaboradores.js')
 const formulario = require('./controller/controllerFormulario.js')
 const favoritos = require('./controller/ControllerFavoritos.js')
 const produtos = require('./controller/controllerProduto.js')
+const jwt = require('./middleware/jwt.js')
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('./modulo/config.js')
 
 
@@ -38,7 +39,6 @@ app.use((request, response, next) => {
 })
 
 const jsonParser = bodyParser.json()
-
 
 // Adicionar um novo formulario
 app.post('/v1/formulario', cors(), jsonParser, async function (request, response) {
@@ -109,8 +109,6 @@ app.get('/v1/botoes', cors(), async function (request, response) {
     response.json(message)
 
 })
-
-
 
 // Traz todos os serviços já criados no banco
 app.get('/v1/servicos', cors(), async function (request, response) {

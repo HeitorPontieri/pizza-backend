@@ -7,54 +7,67 @@ Data_criação : 28/11/2022
 Versão : 1.0
 */
 
-const dao  = require('../model/dao/colaboradores.js')
+const dao = require('../model/dao/colaboradores.js')
 const jwt = require('../middleware/jwt.js')
 
 const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('../modulo/config.js')
 
-const novoColaborador = async function (dados){
-    
-    if(dados.nome_usuario == ''|| dados.nome_usuario == undefined || dados.senha == ''|| dados.senha == undefined)
-        return{status:400,message:MESSAGE_ERROR.REQUIRED_FIELDS}
+const novoColaborador = async function (dados) {
 
-    else{
+    if (dados.nome_usuario == '' || dados.nome_usuario == undefined || dados.senha == '' || dados.senha == undefined)
+        return { status: 400, message: MESSAGE_ERROR.REQUIRED_FIELDS }
+
+    else {
         const novoColab = await dao.insertColaborador(dados)
 
-        if(novoColab){
-            return{status:201,message:MESSAGE_SUCESS.INSERT_ITEM}
+        if (novoColab) {
+            return { status: 201, message: MESSAGE_SUCESS.INSERT_ITEM }
         }
-        else{
-            return{status:500,message:MESSAGE_ERROR.INTERNAL_ERROR_DB}
+        else {
+            return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
         }
     }
 }
 
-const listarColaborador = async function(dados){
+const listarColaborador = async function (dados) {
 
-    let dadosColab = {}
+    if (dados.nome_usuario == '' || dados.nome_usuario == undefined || dados.senha == '' || dados.senha == undefined)
+        return { status: 400, message: MESSAGE_ERROR.REQUIRED_FIELDS }
 
-    if(dados.nome_usuario == ''|| dados.nome_usuario == undefined || dados.senha == ''|| dados.senha == undefined)
-    return{status:400,message:MESSAGE_ERROR.REQUIRED_FIELDS}
+    else {
+        const listarColab = await dao.selectColaborador(dados)
+    
+        if (listarColab) {
+            return listarColab
+        }
+        else {
+            return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
+        }
+
+    }
+
+}
+
+const validarColaborador = async function(dados){
+    
+    if (dados.nome_usuario == '' || dados.nome_usuario == undefined || dados.senha == '' || dados.senha == undefined)
+        return { status: 400, message: MESSAGE_ERROR.REQUIRED_FIELDS }
 
     else{
-        const listarColab = await dao.selectColaborador(dados)
+        const validacao = await dao.validateColaborador(dados)
+        let tokenUser = await jwt.createJWT(validacao.id)
+        validacao.token = tokenUser
+        console.log(validacao);
 
-        if(listarColab){
-            
-            // Gera o token pelo JWT
-            let tokenUser = await jwt.createJWT(dadosColab)
-
-            dadosColab.token  = tokenUser
-            dadosColab.dados = listarColab
-            
-            return dadosColab
+        if (validacao) {
+            return validacao.token
         }
-        else{
-            return {status:500,message:MESSAGE_ERROR.INTERNAL_ERROR_DB}
+        else {
+            return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
         }
 
     }
-     
+
 }
 
 
@@ -62,7 +75,8 @@ const listarColaborador = async function(dados){
 
 
 
-module.exports={
+module.exports = {
     novoColaborador,
-    listarColaborador
+    listarColaborador,
+    validarColaborador
 }
