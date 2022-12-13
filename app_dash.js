@@ -78,7 +78,7 @@ app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
 
 })
 
-app.put('/v1/produto/atualizar/:id', cors(), jsonParser, async function (request, response) {
+app.put('/v1/produto/atualizar/:id', cors(), async function (request, response) {
 
     let statusCode
     let message
@@ -326,9 +326,6 @@ app.get('/v1/pizzas/:id', cors(), async function (request, response) {
     response.json(message)
 
 })
-
-
-
 
 // Adicionar um novo botão
 app.post('/v1/botoes/adicionar', cors(), jsonParser, async function (request, response) {
