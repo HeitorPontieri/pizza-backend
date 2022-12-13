@@ -8,7 +8,7 @@ Versão : 1.0
 */
 
 // Import da biblioteca
-const jwt = require(jsonwebtoken)
+const jwt = require('jsonwebtoken')
 // Chave secreta para criacao do JWT
 const SECRET = 'a1b2c3'
 // Tempo para validar o token do JWT (é em segundos)
@@ -27,15 +27,20 @@ const createJWT = async function(payLoad){
 }
 
 const validateJWT = async function(token){
-    let status = false
+   let status
+
     // Valida a autenticidade do token
     jwt.verify(token,SECRET,async function(err,decode){
         
-        if(!err){
+        if(err != null){
+            status = false
+        }
+        else{
             status = true
         }
-        return status
+        
     })
+    return status
     
 }
 
