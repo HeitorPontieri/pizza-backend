@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,7 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model tbl_teste{
-  id Int @id @default(autoincrement())
-  nome String
+model tbl_bebida {
+  id             Int         @id @unique(map: "id") @default(autoincrement())
+  teor_alcoolico Float
+  volume         Float
+  id_produto     Int
+  tbl_produto    tbl_produto @relation(fields: [id_produto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_produto_bebida")
+
+  @@index([id_produto], map: "FK_produto_bebida")
+}
+
+model tbl_botoes {
+  id   Int    @id @unique(map: "id") @default(autoincrement())
+  nome String @db.VarChar(50)
+  img  String @db.VarChar(150)
+}
+
+model tbl_colaboradores {
+  id           Int    @id @unique(map: "id") @default(autoincrement())
+  nome_usuario String @db.VarChar(50)
+  senha        String @db.VarChar(100)
+}
+
+model tbl_formulario {
+  id                 Int    @id @unique(map: "id") @default(autoincrement())
+  nome               String @db.VarChar(50)
+  mensagem           String @db.Text
+  criticas_sugestoes String @db.VarChar(25)
+  telefone           String @db.VarChar(20)
+  celular            String @db.VarChar(20)
+  email              String @db.VarChar(150)
+}
+
+model tbl_horario_de_funcionamento {
+  id           Int            @id @unique(map: "id") @default(autoincrement())
+  abertura     DateTime       @db.Time(0)
+  fechamento   DateTime       @db.Time(0)
+  tbl_servicos tbl_servicos[]
+}
+
+model tbl_ingredientes {
+  id                     Int                      @id @unique(map: "id") @default(autoincrement())
+  ingrediente_principal  String                   @db.VarChar(45)
+  acompanhamentos        String                   @db.VarChar(120)
+  tbl_ingredientes_pizza tbl_ingredientes_pizza[]
+}
+
+model tbl_ingredientes_pizza {
+  id               Int              @id @unique(map: "id") @default(autoincrement())
+  id_pizza         Int
+  id_ingredientes  Int
+  tbl_ingredientes tbl_ingredientes @relation(fields: [id_ingredientes], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ingredientes_ingredientes")
+  tbl_pizza        tbl_pizza        @relation(fields: [id_pizza], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_pizza_ingredientes")
+
+  @@index([id_ingredientes], map: "FK_ingredientes_ingredientes")
+  @@index([id_pizza], map: "FK_pizza_ingredientes")
+}
+
+model tbl_pizza {
+  id                     Int                      @id @unique(map: "id") @default(autoincrement())
+  id_produto             Int
+  tbl_ingredientes_pizza tbl_ingredientes_pizza[]
+  tbl_produto            tbl_produto              @relation(fields: [id_produto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_produto_pizza")
+
+  @@index([id_produto], map: "FK_produto_pizza")
+}
+
+model tbl_produto {
+  id                   Int          @id @unique(map: "id") @default(autoincrement())
+  nome                 String       @db.VarChar(75)
+  imagem               String       @db.VarChar(150)
+  status_promocao      String       @db.VarChar(25)
+  preco                Float
+  porcentagem_desconto Float?       @db.Float
+  status_favorito      Int?
+  tipo_produto         String       @db.VarChar(15)
+  tbl_bebida           tbl_bebida[]
+  tbl_pizza            tbl_pizza[]
+}
+
+model tbl_servicos {
+  id                           Int                          @id @unique(map: "id") @default(autoincrement())
+  nome                         String                       @db.VarChar(70)
+  id_horario_funcionamento     Int
+  tbl_horario_de_funcionamento tbl_horario_de_funcionamento @relation(fields: [id_horario_funcionamento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_horario_servicos")
+
+  @@index([id_horario_funcionamento], map: "FK_horario_servicos")
 }

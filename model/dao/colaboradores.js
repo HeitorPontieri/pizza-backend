@@ -55,7 +55,7 @@ const validateColaborador = async function (dados){
     try {
         let sql = `select * from tbl_colaboradores where nome_usuario = MD5('${dados.nome_usuario}' and senha = MD5('${dados.senha}')`
 
-        const result = await prisma.$queryRawUnsafe
+        const result = await prisma.$queryRawUnsafe(sql)
 
         if (result) {
             return result
