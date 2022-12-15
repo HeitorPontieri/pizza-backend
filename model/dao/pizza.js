@@ -48,7 +48,7 @@ const getPizzasById = async (id) => {
 
     try {
         
-        let sql = `select * from vwPizza_Ingrediente where id = ${id};`
+        let sql = `select * from vwPizza where id = ${id};`
         console.log(sql)
 
         const result = await prisma.$queryRawUnsafe(sql)
@@ -74,7 +74,7 @@ const getPizzasById = async (id) => {
 }
 const getPizza = async () => {
 
-    let sql = `select * from vwPizza_Ingrediente`
+    let sql = `select * from vwPizza`
 
     const result = await prisma.$queryRawUnsafe(sql)
 

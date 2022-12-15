@@ -44,9 +44,8 @@ const novoProduto = async (dados) => {
                 if (dados.tipo_produto == 'Pizza' || dados.tipo_produto == 'pizza') {
 
                     const resultPizza = await Pizza.insertPizza(dados)
-                    const resultPizza_Ingred = await pizza_ing.insertPizzaIngrediente()
-
-                    if (resultPizza && resultPizza_Ingred) {
+                    
+                    if (resultPizza ) {
                         return { status: 201, message: MESSAGE_SUCESS.INSERT_ITEM }
                     } else {
                         return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
