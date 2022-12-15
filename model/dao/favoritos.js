@@ -44,6 +44,6 @@ const updateFavoritos = async function (dados) {
 }
 
 module.exports = {
-    getFavoritos,
+
     updateFavoritos
 }

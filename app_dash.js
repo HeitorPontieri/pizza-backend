@@ -160,7 +160,7 @@ app.delete('/v1/produto/apagar/:id', cors(), jsonParser, async function (request
 })
 
 // Adicionar um ingrediente
-app.post('/v1/ingrediente/:id', cors(), jsonParser, async function (request, response) {
+app.post('/v1/ingrediente', cors(), jsonParser, async function (request, response) {
 
     let statusCode
     let message
