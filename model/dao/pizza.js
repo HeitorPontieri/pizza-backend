@@ -74,7 +74,11 @@ const getPizzasById = async (id) => {
 }
 const getPizza = async () => {
 
+<<<<<<< Updated upstream
     let sql = `select * from vwPizza`
+=======
+    let sql = `select * from vwPizza_Ingrediente;`
+>>>>>>> Stashed changes
 
     const result = await prisma.$queryRawUnsafe(sql)
 
