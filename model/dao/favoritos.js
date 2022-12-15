@@ -10,34 +10,24 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient
 
-const getFavoritos = async function (status_favorito) {
-    try {
-
-        const status_fav = status_favorito
-
-        let sql = `call procFavorito(${status_fav.status_favorito})`
-
-        const result = await prisma.$queryRawUnsafe(sql)
-
-        if (result) {
-            return result
-        }
-        else {
-            return false
-        }
-
-    } catch (error) {
-        return false
-    }
-}
-
 const updateFavoritos = async function (dados) {
     try {
-        let sql = `update tbl_produto
-            set tbl_produto.status_favorito = tbl_produto.status_favorito + 1
-            where tbl_produto.id = ${dados.id}`
 
-        const result = prisma.$executeRawUnsafe(sql)
+        /*
+            DELIMITER $$
+            create procedure procUpdateFav (in id int)
+
+            BEGIN
+
+            update tbl_produto
+            set tbl_produto.status_favorito = tbl_produto.status_favorito + 1
+            where tbl_produto.id = id;
+            
+            END $$
+        */ 
+        let sql = `call procUpdateFav(${dados.id})`
+
+        const result = await prisma.$executeRawUnsafe(sql)
 
         if (result) {
             return true
