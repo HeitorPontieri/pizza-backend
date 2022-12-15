@@ -89,6 +89,7 @@ const updateProduto = async function(dados) {
 
         let sql  = `call procAtualizarProd (${dados.id},'${dados.nome}', '${dados.imagem}', '${dados.status_promocao}', ${dados.preco},${dados.porcentagem_desconto},${dados.status_favorito},'${dados.tipo_produto}');`
 
+        console.log(sql);
        const result = await prisma.$executeRawUnsafe(sql)
 
        if(result){

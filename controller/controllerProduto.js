@@ -24,7 +24,7 @@ const novoProduto = async (dados) => {
 
         const resultNovoProduto = await model.insertProduto(dados)
 
-
+        console.log(dados.tipo_produto);
         if (resultNovoProduto) {
 
             if (dados.tipo_produto == 'Bebida' || dados.tipo_produto == 'bebida') {
@@ -45,7 +45,7 @@ const novoProduto = async (dados) => {
 
                     const resultPizza = await Pizza.insertPizza(dados)
                     
-                    if (resultPizza ) {
+                    if (resultPizza) {
                         return { status: 201, message: MESSAGE_SUCESS.INSERT_ITEM }
                     } else {
                         return { status: 500, message: MESSAGE_ERROR.INTERNAL_ERROR_DB }
