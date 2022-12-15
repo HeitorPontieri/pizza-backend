@@ -91,7 +91,7 @@ app.post('/v1/produto', cors(), jsonParser, async function (request, response) {
 
 })
 
-app.put('/v1/produto/atualizar/:id', cors(), async function (request, response) {
+app.put('/v1/produto/atualizar/:id', cors(),jsonParser, async function (request, response) {
 
     let statusCode
     let message
